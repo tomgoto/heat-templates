@@ -1,0 +1,29 @@
+heat_template_version: 2015-04-30
+description: Just one instance
+
+parameters:
+  ImageID:
+    type: string
+    description: Image id or name to use for a server
+    constraints:
+      - custom_constraint: glance.image
+
+  NetID:
+    type: string
+    description: Network ID or name to connect to a server
+    constraints:
+      - custom_constraint: neutron.network
+
+resources:
+  server:
+    type: OS::Nova::Server
+    properties:
+      image: { get_param: ImageID }
+      flavor: m1.small
+      networks:
+        - network: { get_param: NetID }
+
+outputs:
+  private_ip:
+    description: IP address of the server in the private network
+    value: { get_attr: [ server, first_address ] }

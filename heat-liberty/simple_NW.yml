@@ -1,0 +1,24 @@
+heat_template_version: 2015-04-30
+description: Just one Network
+
+parameters:
+  NetworkName:
+    type: string
+    label: network name
+    description: Name of the network to create
+    default: myNetwork
+    hidden: false
+    constraints:
+      - allowed_pattern: "[a-zA-Z][a-zA-Z0-9_]*"
+        description: network name must start with character.
+
+resources:
+  network:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: NetworkName }
+
+outputs:
+  network:
+    description: network you created
+    value: { get_attr: [ network, name ] }
