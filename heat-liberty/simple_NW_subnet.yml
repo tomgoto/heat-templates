@@ -11,12 +11,73 @@ parameters:
     constraints:
       - allowed_pattern: "[a-zA-Z][a-zA-Z0-9_]*"
         description: network name must start with character.
+  SubnetName:
+    type: string
+    label: subnet Name
+    description: Name of the subnetwork
+    default: subnetwork
+    hidden: false
+    constraints:
+      - allowed_pattern: "[a-zA-Z][a-zA-Z0-9_]*"
+        description: subnetwork name must start with character.
+
+  Subnet_cidr:
+    type: string
+    label: subnet cidr
+    description: cidr for subnet
+    default: 192.168.0.0/24
+    hidden: false
+    constraints:
+      - allowed_pattern: ".*"
+        description: cidr must be like 192.168.0.0/24
+
+  Subnet_gateway:
+    type: string
+    label: subnet gatway
+    description: gatway for subnet
+    default: 192.168.0.254
+    hidden: false
+    constraints:
+      - allowed_pattern: ".*"
+        description: gw must be like 192.168.0.254
+
+  Subnet_pool_start:
+    type: string
+    label: subnet pool start
+    description: pool start for subnet
+    default: 192.168.0.10
+    hidden: false
+    constraints:
+      - allowed_pattern: ".*"
+        description: gw must be like 192.168.0.10
+
+  Subnet_pool_end:
+    type: string
+    label: subnet pool end
+    description: pool end for subnet
+    default: 192.168.0.250
+    hidden: false
+    constraints:
+      - allowed_pattern: ".*"
+        description: gw must be like 192.168.0.250
 
 resources:
   network:
     type: OS::Neutron::Net
     properties:
       name: { get_param: NetworkName }
+
+  subnetwork:
+    type: OS::Neutron::Subnet
+    properties:
+      name: { get_param: SubnetName }
+      network: { get_resource: network }
+      cidr: { get_param: Subnet_cidr }
+      gateway_ip: { get_param: Subnet_gateway }
+      allocation_pools:
+        - start: { get_param: Subnet_pool_start }
+          end: { get_param: Subnet_pool_end }
+
 
 outputs:
   network:
